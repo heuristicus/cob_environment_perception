@@ -59,7 +59,7 @@ class GeometryNode : public cob_3d_geometry_map::TransformationEstimator {
 
 	void callback2(const cob_3d_mapping_msgs::PlaneSceneConstPtr& scene)
 	{
-	  ROS_INFO("callback2");
+	  //ROS_INFO("callback2");
 	  
 	  if(!ctxt_) return;
 	  
@@ -85,7 +85,7 @@ class GeometryNode : public cob_3d_geometry_map::TransformationEstimator {
 
 	  tf::transformTFToEigen(transform, tf2target_);
 	  
-	  try {
+	  /* try { */
 		  //now do the mapping stuff
 		  ros::Time start = ros::Time::now();
 		  ctxt_->add_scene(*scene, this);
@@ -97,11 +97,11 @@ class GeometryNode : public cob_3d_geometry_map::TransformationEstimator {
 		  //some additional features
 		  publish_scan(scene->header);
 		  publish_cartons(scene->header);
-	  }
-	  catch(...) {
-		  ROS_ERROR("some error in geometry_map_v2, resetting...");
-		  reset();
-	  }
+	  /* } */
+	  /* catch(...) { */
+	  /*         ROS_ERROR("some error in geometry_map_v2, resetting..."); */
+	  /* 	  reset(); */
+	  /* } */
 	}
 	
 	void publish_cartons(const std_msgs::Header &header) {

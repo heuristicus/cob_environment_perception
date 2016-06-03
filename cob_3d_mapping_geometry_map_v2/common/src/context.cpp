@@ -42,6 +42,7 @@ void GlobalContext::add_scene(const cob_3d_mapping_msgs::PlaneScene &scene, Tran
 	scene_2d_.reset(new Context2D(scene_, proj_.cast<float>(), tf));
 	scene_->set_context_2d(scene_2d_.get());
 	scene_2d_->merge(ctxt, merge_enabled_);
+
 	
 #ifdef DEBUG_
 	std::cout<<"scene_ "<<scene_->end()-scene_->begin()<<std::endl;
@@ -267,9 +268,15 @@ Context2D::Context2D(const Context::Ptr &ctxt, const Eigen::Matrix3f &proj, cons
 #ifdef DEBUG_
 	std::cout<<"Context2D: "<<result.size()<<" from "<<(ctxt->end()-ctxt->begin())<<std::endl;
 #endif
+
+
 	for(size_t i=0; i<result.size(); i++) {
-		insert(result[i]);
-	
+	    try {
+	      insert(result[i]);
+	    } catch (...) {
+	      ROS_INFO("Caught error while attempting to insert");
+	    }
+
 #ifdef DEBUG_
 		save_as_svg("/tmp/Context2D.svg");
 #endif
@@ -558,7 +565,6 @@ void Context2D::merge(const Context::Ptr &ctxt, const bool merge_enabled)
 						
 					std::vector<value> result_n;
 					rtree_.query(boost::geometry::index::intersects(bb), std::back_inserter(result_n));
-					
 					for(size_t k=0; k<result_n.size(); k++)
 						ints[result_n[k].second->obj_].push_back(result_n[k]);
 					
